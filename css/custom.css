@@ -2,6 +2,11 @@ body, html {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  -webkit-transition: background 0.9s ;
+    -moz-transition: background 0.9s ;
+    -ms-transition: background 0.9s ;
+    -o-transition: background 0.9s ;
+    transition: background 0.9s ;
 }
 canvas {
   background: rgba(0, 0, 0, 0);
@@ -10,7 +15,7 @@ canvas {
   top: 0;
   width: 100%;
 }
-
+  
 row {
   position: relative;
 }
