@@ -17,7 +17,7 @@ $(function() {
 	var rightHand = new PlayerHand(0, 0);
 	
 	// Initialize the starting animations
-	addNewParticles(150);
+	addNewParticles(300);
 	
 	// Slows the initial particles
 	for(i = 0; i < particles.length; i++){
@@ -63,7 +63,7 @@ $(function() {
 		// Draw a square at each particle
 		for (var i = 0; i < particles.length; i++) {
 			var particle = particles[i];
-			ctx.fillRect(particle.pos.x, particle.pos.y, particle.size, particle.size);
+			ctx.fillRect(particle.pos.x-particle.size/2, particle.pos.y-particle.size/2, particle.size, particle.size);
 		}
 	}
 	
@@ -166,26 +166,30 @@ $(function() {
 		
 	// A generic field object with a position and a mass. Used to attract (or repell) particles
 	function Field (x, y, vx, vy, power, radius) {
-		this.itself = new Particle(x, y, vx, vy, 0, 0);
+		this.itself = new Particle(x-radius/2, y-radius/2, vx, vy, 0, 0);
 		this.power = power;
 		this.radius = radius;
 	}
 		
 		// Black Hole that sucks in particles
 		function BlackHole (x, y, power, radius) {
-			this.field = new Field(x, y , 0, 0, power, radius);
+			
+			this.field = new Field(x-radius/2, y-radius/2 , 0, 0, power, radius);
 			this.particleCount = 0;
 		}
 		
 	// Player's hand used to interact with particles
 	function PlayerHand (x, y) {
-		this.pos = new Vector(x, y);
+		
+		this.pos = centre(x,y,25);
 		this.size = 25;
 		this.power = -10;
 	}
 		
 	// Determines if two circles collide or not
 	function circleHitDetection(pointOne, pointTwo, radiusOne, radiusTwo){
+		pointOne=centre(pointOne.x,pointOne.y, radiusOne);
+		pointTwo=centre(pointTwo.x,pointTwo.y, radiusTwo);
 		return (pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x) + (pointOne.y - pointTwo.y) * (pointOne.y - pointTwo.y) <= (radiusOne + radiusTwo) * (radiusOne + radiusTwo);
 	}
 	
@@ -208,10 +212,14 @@ $(function() {
 				console.log("yo:" + i);
                           }
                   }
-	
+	function centre(x,y,radius){
+		return Vector(x-radius/2,y-radius/2);
+	}
+		
 	// Loops the leap motion device
 	Leap.loop(function(frame) {
 	frame.hands.forEach(function(hand, index){	
+	   var cursorSize= 10+10*hand.grabStrength.toPrecision(2);
            var handR= {
 			  x: canvas.width*0.5 + hand.palmPosition[0]*canvas.width/400,
                           y: canvas.height*1.25 - hand.palmPosition[1]*canvas.height/300
@@ -219,9 +227,9 @@ $(function() {
 		//addNewCursorticles(50,handR.x,handR.y)
 		console.log("X: " + handR.x + " Y: " + handR.y + "   " + cursorticles.length);
 		rightHand= new PlayerHand(handR.x,handR.y);
-		ctx.fillRect(handR.x, handR.y,20+ 20*hand.grabStrength.toPrecision(2), 20+20*hand.grabStrength.toPrecision(2));	
-		BlackHole(handR.x,handR.y,20,28);
-		Field(handR.x,handR.y, 0,0,20)
+
+		ctx.fillRect(handR.x-cursorSize/2, handR.y-cursorSize/2,cursorSize, cursorSize);			
+		//Field(handR.x,handR.y, 0,0,20)
 	});
 
 	});
