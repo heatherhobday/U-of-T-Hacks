@@ -188,8 +188,8 @@ $(function() {
 	Leap.loop(function(frame) {
         frame.hands.forEach(function(hand, index) {
             var hands= {
-				x: hand.palmPosition[0],
-				y: hand.palmPosition[1]
+			  x: canvas.width*0.5 +hand.palmPosition[0]*canvas.width/400,
+                          y: canvas.height*1.25 - hand.palmPosition[1]*canvas.height/300
 		}     
 		console.log("X: " + hands.x + " Y: " + hands.y);
 		});
