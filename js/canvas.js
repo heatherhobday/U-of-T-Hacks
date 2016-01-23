@@ -10,9 +10,10 @@ $(function() {
 
 	// Container for all the particles, fields, and emitters and player input
 	var particles = []
+	var cursorticles=[50]  
 	var emitters = []
 	var fields = []
-	var leftHand = new PlayerHand(0, 0);
+	//var leftHand = new PlayerHand(0, 0);
 	var rightHand = new PlayerHand(0, 0);
 	
 	// Initialize the starting animations
@@ -47,6 +48,11 @@ $(function() {
 			var particle = particles[i];
 			move(particle);
 		}
+        for(j = 0; j < cursorticles.length;j++){ 
+	var cursorticle = cursorticles[i];
+                          move(particle);
+                  }
+
 	}
 	
 	// Draws entities to the canvas screen
@@ -180,19 +186,40 @@ $(function() {
 		
 	// Determines if two circles collide or not
 	function circleHitDetection(pointOne, pointTwo, radiusOne, radiusTwo){
-		return (pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x) + 
-			(pointOne.y - pointTwo.y) * (pointOne.y - pointTwo.y) <= (radiusOne + radiusTwo) * radiusOne + radiusTwo);
+		return (pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x) + (pointOne.y - pointTwo.y) * (pointOne.y - pointTwo.y) <= (radiusOne + radiusTwo) * (radiusOne + radiusTwo);
 	}
+	
+	 function createCursor(xpos,ypos) {
+                          var x = xpos;
+                          var y = ypos;
+                          var vx = baseVelocity + Math.random();
+                          var vy = baseVelocity + Math.random();
+ 
+                          return (new Particle(x, y, 0, 0, 0, 0));
+                  }
+	function addNewCursorticles(amount,x,y) {
+                          // Create particles from anywhere
+                          for(i = 0; i < amount; i++){
+                                  if(cursorticles.length < maxParticles){
+                                          cursorticles[i]=createCursor(x,y);
+                                  } else {
+                                          i = amount;
+                                  }
+                          }
+                  }
 	
 	// Loops the leap motion device
 	Leap.loop(function(frame) {
-        frame.hands.forEach(function(hand, index) {
-            var hands= {
-			  x: canvas.width*0.5 +hand.palmPosition[0]*canvas.width/400,
+	frame.hands.forEach(function(hand, index){	
+           var handR= {
+			  x: canvas.width*0.5 + hand.palmPosition[0]*canvas.width/400,
                           y: canvas.height*1.25 - hand.palmPosition[1]*canvas.height/300
-		}     
-		console.log("X: " + hands.x + " Y: " + hands.y);
+		};     
+		addNewCursorticles(50,handR.x,handR.y)
+		console.log("X: " + handR.x + " Y: " + handR.y + "   " + cursorticles.length);
+		rightHand= new PlayerHand(handR.x,handR.y);
 		});
+
 	});
 	
 	Leap.loopController.setBackground(true);
