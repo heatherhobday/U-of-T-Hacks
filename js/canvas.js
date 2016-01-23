@@ -132,7 +132,7 @@ $(function() {
 				y: hand.palmPosition[1]
 		}     
 		console.log("X: " + hands.x + " Y: " + hands.y);
-	});
-	
+		});
+	});	
 Leap.loopController.setBackground(true);
 });
