@@ -1,11 +1,13 @@
 $(function() {
+	var vel_multiplier = 0.2;
+	
 	var canvas = document.querySelector('canvas'),
       ctx = canvas.getContext('2d'),
       color = 'rgba(255, 255, 255, .5)';
 
-   var w = window.innerWidth;
-   var h = window.innerHeight;
-   canvas.width = w;
+    var w = $(window).width();
+    var h = $(window).height();
+    canvas.width = w;
 	canvas.height = h;
 	ctx.fillStyle = color;
 	ctx.lineWidth = .1;
@@ -16,6 +18,14 @@ $(function() {
 		y: 10 * h / 100
 	};
 
+	// Times it so the window starts producing dots at the end of the slide animation
+	$(window).click(function() {
+		for(i = 0; i < dots.num; i++){
+			dots.array[i].vx /= vel_multiplier;
+			dots.array[i].vy /= vel_multiplier
+		}
+	});
+	
 	var dots = {
     num: 100,
     distance: 200,
@@ -28,8 +38,8 @@ $(function() {
 		this.x = Math.random() * w;
 		this.y = Math.random() * h;
 
-		this.vx = dots.velocity + Math.random();
-		this.vy = dots.velocity + Math.random();
+		this.vx = (dots.velocity + Math.random()) * vel_multiplier;
+		this.vy = (dots.velocity + Math.random()) * vel_multiplier;
 
 		this.radius = Math.random() * 2;
 	}
