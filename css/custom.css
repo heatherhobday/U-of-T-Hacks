@@ -1,23 +1,15 @@
 body, html {
-	height: 100%;
-	overflow: hidden;
+  height: 100%;
+
 }
 canvas {
-	background: rgba(0, 0, 0, 0);
-	position: absolute;
-	width: 100%;
-	left: 0;
-	top: 0;
+  background: #000000;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 row {
-	position: relative;
-}
-
-#background {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	color: white;
+  position: relative;
 }
