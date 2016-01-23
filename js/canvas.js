@@ -205,6 +205,7 @@ $(function() {
                                   } else {
                                           i = amount;
                                   }
+				console.log("yo:" + i);
                           }
                   }
 	
@@ -215,10 +216,13 @@ $(function() {
 			  x: canvas.width*0.5 + hand.palmPosition[0]*canvas.width/400,
                           y: canvas.height*1.25 - hand.palmPosition[1]*canvas.height/300
 		};     
-		addNewCursorticles(50,handR.x,handR.y)
+		//addNewCursorticles(50,handR.x,handR.y)
 		console.log("X: " + handR.x + " Y: " + handR.y + "   " + cursorticles.length);
 		rightHand= new PlayerHand(handR.x,handR.y);
-		});
+		ctx.fillRect(handR.x, handR.y,20+ 20*hand.grabStrength.toPrecision(2), 20+20*hand.grabStrength.toPrecision(2));	
+		BlackHole(handR.x,handR.y,20,28);
+		Field(handR.x,handR.y, 0,0,20)
+	});
 
 	});
 	
