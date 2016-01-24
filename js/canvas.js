@@ -1,6 +1,6 @@
 $(function() {
 	var maxParticles = 1500;
-	var baseVelocity = 1;
+	var animSpeed = 5000;
 	var velConstant = 16;
 
 	var canvas = document.querySelector('canvas');
@@ -15,6 +15,13 @@ $(function() {
 	var leftHand = new PlayerHand(0, 0);
 	var rightHand = new PlayerHand(0, 0);
 	
+	//Radial point
+	var colors = ['#162955', '#4F628E', '#7887AB', '#887CAF', '#226666', '#B45A81']
+	var radial = $("#background");
+	var xCoord = '1px';
+	var yCoord = '0px';
+	radial.css('margin-left', 0);
+	
 	// Initialize the starting animations
 	addNewParticles(150);
 	
@@ -26,6 +33,46 @@ $(function() {
 	
 	// Starts the loop sequence
 	loop();
+	
+	// Enables the background animation
+	$(window).click(function (){
+		if($('#foreground').css('margin-bottom') == "0px"){
+			xCoord = '0px';
+			$('#body').css('transition', 'background 20s');
+			$('#body').css('background', colors[0]);
+			setTimeout(changeColor, '20000');
+		}
+	});
+	
+	// Changes the color of the background
+	function changeColor() {
+		var color = colors[Math.floor(Math.random() * colors.length)];
+		while(color != $("#body").css("background")){
+			color = colors[Math.floor(Math.random() * colors.length)];
+		}
+		
+		$('#body').css('background', color);
+		setTimeout(changeColor, '20000');
+	}
+	
+	// Checker that it is constantly run to test if the coords need to be updated
+	function checkCoords() {
+		if(radial.css('margin-left') - xCoord <= '2px' || radial.css('margin-left') - xCoord >= '-2px'){
+			radial.css('margin-left', xCoord);
+		}
+		
+		if(radial.css('margin-left') == xCoord){
+			xCoord = Math.round($(window).width() * -0.25 + $(window).width() / 2 * Math.random()) + 'px';
+			yCoord = Math.round($(window).height() * -0.25 + $(window).height() / 2 * Math.random()) + 'px';
+			animGradient();
+		}
+	}
+	
+	// Animates the gradient ball
+	function animGradient() {
+		radial.animate({'margin-bottom': yCoord}, {duration: animSpeed});
+		radial.animate({'margin-left': xCoord}, {duration: animSpeed, queue: false});
+	}
 	
 	// The loop of the canvas which keeps it updating and animating
 	function loop(){
@@ -42,6 +89,8 @@ $(function() {
 	
 	// Update variables in a single loop instance
 	function update(){
+		checkCoords();
+		
 		for(i = 0; i < particles.length; i++){
 			// Move the particle
 			var particle = particles[i];
@@ -152,8 +201,8 @@ $(function() {
 		function createRandomParticle() {
 			var x = $(window).width() * Math.random();
 			var y = $(window).width() * Math.random();
-			var vx = baseVelocity + Math.random();
-			var vy = baseVelocity + Math.random();
+			var vx = 1 + Math.random();
+			var vy = 1 + Math.random();
 			
 			return (new Particle(x, y, vx, vy, 0, 0));
 		}
@@ -180,7 +229,7 @@ $(function() {
 		
 	// Determines if two circles collide or not
 	function circleHitDetection(pointOne, pointTwo, radiusOne, radiusTwo){
-		return (pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x) + 
+		return ((pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x) + 
 			(pointOne.y - pointTwo.y) * (pointOne.y - pointTwo.y) <= (radiusOne + radiusTwo) * radiusOne + radiusTwo);
 	}
 	
