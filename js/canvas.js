@@ -112,7 +112,8 @@ $(function() {
 	// Draws entities to the canvas screen
 	function draw(){
 		// Set the color of our particles
-		ctx.fillStyle = 'rgb(217,255,48)';
+		ctx.fillStyle = 'rgba(217,255,220, 0.6)';
+		ctx.strokeStyle = 'rgba(217,255,220, 0.8)';
 
 		// Draw a square at each particle
 		for (var i = 0; i < particles.length; i++) {
@@ -124,6 +125,10 @@ $(function() {
 		for (var j = 0; j < fields.length; j++) {
 			var field = fields[j];
 			ctx.fillRect(field.itself.pos.x-field.radius/2, field.itself.pos.y-field.radius/2, field.radius, field.radius);
+			ctx.beginPath();
+			ctx.arc(field.itself.pos.x-field.radius/2, field.itself.pos.y-field.radius/2, field.radius, 0, 2 * Math.PI, false);
+		    ctx.fill();
+		    ctx.stroke();
 		}
 	}
 
