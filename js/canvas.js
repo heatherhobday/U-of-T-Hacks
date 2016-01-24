@@ -21,6 +21,8 @@ $(function() {
 	var xCoord = '1px';
 	var yCoord = '0px';
 	radial.css('margin-left', 0);
+	
+	fields.push(new Field(0,0,0,0,0,0));
 
 	// Initialize the starting animations
 	addNewParticles(1200);
@@ -94,8 +96,10 @@ $(function() {
 	function update(){
 		var d = new Date();
 		var ext = "am";
-		if(d.getHours >= 12){ ext = "pm"};
-		$('#time').html(d.getHours() % 11 + ":" + d.getMinutes() + ext);
+		if(d.getHours() >= 12){ 
+			ext = "pm";
+		}
+		$('#time').html(d.getHours() % 12 + ":" + d.getMinutes() + ext);
 		checkCoords();
 		
 		for(i = 0; i < particles.length; i++){
@@ -108,7 +112,7 @@ $(function() {
 	// Draws entities to the canvas screen
 	function draw(){
 		// Set the color of our particles
-		ctx.fillStyle = 'rgb(180,150,220)';
+		ctx.fillStyle = 'rgb(217,255,48)';
 
 		// Draw a square at each particle
 		for (var i = 0; i < particles.length; i++) {
@@ -125,7 +129,6 @@ $(function() {
 
 	// On the window click it speeds up the particles after the animation is completed
 	$('#timeArea').on("click", function (){
-		alert("hey");
 		if($('#foreground').css('margin-bottom') >= -$('#foreground').height() + "px"){
 			xCoord = '0px';
 			yCoord = '0px';
@@ -160,37 +163,41 @@ $(function() {
 
 		// Moves the particle based on velocity and acceleration
 		function move(p) {
-					/*	for(m=0;m<particles.length;m++){
-						if(circleHitDetection(p.pos,particles[m].pos,p.size,particles[m].size)) {
-							p.pos.x*= (-1);
-							p.pos.y*= (-1);
-							particles[m].pos.x*= (-1);
-							particles[m].pos.y*= (-1);
-						}
-					}*/
-						// Applies gravity fields to appropriate particles
-						for(k = 0; k < fields.length; k++){
+				/*	for(m=0;m<particles.length;m++){
+					if(circleHitDetection(p.pos,particles[m].pos,p.size,particles[m].size)) {
+						p.pos.x*= (-1);
+						p.pos.y*= (-1);
+						particles[m].pos.x*= (-1);
+						particles[m].pos.y*= (-1);
+					}
+				}*/
+					// Applies gravity fields to appropriate particles
+					for(k = 0; k < fields.length; k++){
+							var f = fields[k];
 
-								var f = fields[k];
-
-								// find the distance between the particle and the field
-				    		var vectorX = f.itself.pos.x - p.pos.x;
-				    		var vectorY = f.itself.pos.y - p.pos.y;
-				    		var force = f.power / Math.abs(Math.pow(vectorX*vectorX+vectorY*vectorY,1.5));
-
-								p.acc.x += (vectorX * force);
-								p.acc.y += (vectorY * force);
-
-								//Adding vectors over time
-								addVector(p.vel, p.acc);
-								addVector(p.pos, p.vel);
-								p.acc.x *=0.8;
-								p.acc.y *=0.8;
-								if(p.vel.x+p.vel.y>1.5){
-									p.vel.x*=0.9;
-									p.vel.y*=0.9;
-								}
-						}
+							// find the distance between the particle and the field
+				    	var vectorX = f.itself.pos.x - p.pos.x;
+				    	var vectorY = f.itself.pos.y - p.pos.y;
+				    	var force = f.power / Math.abs(Math.pow(vectorX*vectorX+vectorY*vectorY,1.5));
+							p.acc.x += (vectorX * force);
+							p.acc.y += (vectorY * force);
+							if(Math.pow(vectorX,2)+Math.pow(vectorY,2) < Math.pow(f.radius,2)){
+								var temp= p;
+								p=particles[particles.length-1];
+								particles[particles.length-1]=temp;
+								particles.pop();
+								particles.push(createRandomParticle());
+							}
+							//Adding vectors over time
+							addVector(p.vel, p.acc);
+							addVector(p.pos, p.vel);
+							p.acc.x *=0.65;
+							p.acc.y *=0.65;
+							if(Math.abs(p.vel.x+p.vel.y)>1.0){
+								p.vel.x*=0.75;
+								p.vel.y*=0.75;
+							}
+						
 
 			// Bounces the particle back into the canvas
 			if(p.pos.x - p.size< 0 || p.pos.x + p.size> $(window).width()){
@@ -213,7 +220,7 @@ $(function() {
 				p.acc.y = 0;
 			}
 		}
-
+	}
 	// An Emitter object which acts itself as a particle but also contains a spread to emit particles
 	function Emitter(x, y, vx, vy, ax, ay, spread){
 		this.itself = new Particle(x, y, vx, vy, ax, ay);
@@ -231,10 +238,10 @@ $(function() {
 			// Calculates necessary information for a new particle
 			var angle = Math.atan2(emtr.itself.vel.y, emtr.itself.vel.x) + emtr.spread * Math.random() * multiplier;
 			var magnitude = Math.sqrt(emtr.itself.vel.x * emtr.itself.vel.x + emtr.itself.vel.y * emtr.itself.vel.y);
-
+  		//	var force = field.mass / Math.pow(vectorX*vectorX+vectorY*vectorY,1.5)rticles[particles.length-1]particles[particles.length-1;]
 			// Return the newly created particle
 			return new Particle(emtr.itself.pos.x, emtr.itself.pos.y, magnitude * Math.cos(angle), magnitude * Math.sin(angle))
-		}
+		} 
 
 		// Function for adding new particles to the screen
 		function addNewParticles(amount) {
@@ -327,17 +334,17 @@ $(function() {
 	   var cursorSize= 10+10*hand.grabStrength.toPrecision(2);
            var handR= {
 			  x: canvas.width*0.5 + hand.palmPosition[0]*canvas.width/400,
-        y: canvas.height*1.25 - hand.palmPosition[1]*canvas.height/300
+       			  y: canvas.height*1.25 - hand.palmPosition[1]*canvas.height/300
 		};
 		//addNewCursorticles(50,handR.x,handR.y)
 		//console.log("X: " + handR.x + " Y: " + handR.y + "   " + cursorticles.length);
 		//rightHand= new PlayerHand(handR.x,handR.y);
 		//ctx.fillRect(handR.x-cursorSize/2, handR.y-cursorSize/2,cursorSize, cursorSize);
-		fields[0]=new Field(handR.x,handR.y, 1,3,5+30*hand.grabStrength.toPrecision(2),20+60*hand.grabStrength.toPrecision(2));
-
-});
-
+		fields[0]=new Field(handR.x,handR.y, 1,3,-30-90*hand.grabStrength.toPrecision(2),10+30*hand.grabStrength.toPrecision(2));
+		//fields[1]=new Field(handR.x,handR.y, 1,3,-30-90*hand.grabStrength.toPrecision(2),10+30*hand.grabStrength.toPrecision(2));
+		
+		});
 	});
-
 	Leap.loopController.setBackground(true);
 });
+
