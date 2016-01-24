@@ -1,4 +1,5 @@
 $(function() {
+	var animation_speed = 1200;
 	var maxParticles = 1500;
 	var animSpeed = 5000;
 	var velConstant = 16;
@@ -10,12 +11,9 @@ $(function() {
 
 	// Container for all the particles, fields, and emitters and player input
 	var particles = []
-	//var cursorticles=[50]
 	var emitters = []
 	var fields = []
-	//var leftHand = new PlayerHand(0, 0);
 	var rightHand = new PlayerHand(0, 0);
-<<<<<<< HEAD
 	
 	//Radial point
 	var colors = ['#162955', '#4F628E', '#7887AB', '#887CAF', '#226666', '#B45A81']
@@ -23,12 +21,7 @@ $(function() {
 	var xCoord = '1px';
 	var yCoord = '0px';
 	radial.css('margin-left', 0);
-	
-=======
-	//fields.push(new Field(0,0,0,0,0,0));
-	//fields.push(new Field(500, 250, 1, 1, 2, 15));
 
->>>>>>> origin/master
 	// Initialize the starting animations
 	addNewParticles(1200);
 
@@ -40,7 +33,6 @@ $(function() {
 
 	// Starts the loop sequence
 	loop();
-<<<<<<< HEAD
 	
 	// Enables the background animation
 	$(window).click(function (){
@@ -55,7 +47,8 @@ $(function() {
 	// Changes the color of the background
 	function changeColor() {
 		var color = colors[Math.floor(Math.random() * colors.length)];
-		while(color != $("#body").css("background")){
+		
+		while(color == $("#body").css("background")){
 			color = colors[Math.floor(Math.random() * colors.length)];
 		}
 		
@@ -65,14 +58,16 @@ $(function() {
 	
 	// Checker that it is constantly run to test if the coords need to be updated
 	function checkCoords() {
-		if(radial.css('margin-left') - xCoord <= '2px' || radial.css('margin-left') - xCoord >= '-2px'){
-			radial.css('margin-left', xCoord);
-		}
-		
-		if(radial.css('margin-left') == xCoord){
-			xCoord = Math.round($(window).width() * -0.25 + $(window).width() / 2 * Math.random()) + 'px';
-			yCoord = Math.round($(window).height() * -0.25 + $(window).height() / 2 * Math.random()) + 'px';
-			animGradient();
+		if($('#foreground').css('margin-bottom') == $('#foreground').height()){
+			if(radial.css('margin-left') - xCoord <= '2px' || radial.css('margin-left') - xCoord >= '-2px'){
+				radial.css('margin-left', xCoord);
+			}
+			
+			if(radial.css('margin-left') == xCoord){
+				xCoord = Math.round($(window).width() * -0.25 + $(window).width() / 2 * Math.random()) + 'px';
+				yCoord = Math.round($(window).height() * -0.25 + $(window).height() / 2 * Math.random()) + 'px';
+				animGradient();
+			}
 		}
 	}
 	
@@ -82,9 +77,6 @@ $(function() {
 		radial.animate({'margin-left': xCoord}, {duration: animSpeed, queue: false});
 	}
 	
-=======
-
->>>>>>> origin/master
 	// The loop of the canvas which keeps it updating and animating
 	function loop(){
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -100,6 +92,10 @@ $(function() {
 
 	// Update variables in a single loop instance
 	function update(){
+		var d = new Date();
+		var ext = "am";
+		if(d.getHours >= 12){ ext = "pm"};
+		$('#time').html(d.getHours() % 11 + ":" + d.getMinutes() + ext);
 		checkCoords();
 		
 		for(i = 0; i < particles.length; i++){
@@ -128,10 +124,19 @@ $(function() {
 	}
 
 	// On the window click it speeds up the particles after the animation is completed
-	$(window).click(function (){
-		if($('#background').css('margin-bottom') == "0px"){
-			// do something
-		}
+	$('#timeArea').on("click", function (){
+		alert("hey");
+		if($('#foreground').css('margin-bottom') >= -$('#foreground').height() + "px"){
+			xCoord = '0px';
+			yCoord = '0px';
+			$('#body').css('transition', 'background 1.2s');
+			$('#body').css('background', '#D75C6A');
+			
+			$('#foreground').delay(100).animate({'margin-bottom': 0}, animation_speed);
+			$('#midground').delay(300).animate({'margin-bottom': 0}, animation_speed);
+			$('#title').animate({'margin-top': "1.5em"}, animation_speed);
+			$('#title').html("Still Snowing");
+		} 
     });
 
 	// Basic Vector Object with values x, y
@@ -251,17 +256,17 @@ $(function() {
 			if(Math.random()<0.5) multy=-1;
 			var x = $(window).width() * Math.random();
 			var y = $(window).width() * Math.random();
-<<<<<<< HEAD
+
 			var vx = 1 + Math.random();
 			var vy = 1 + Math.random();
 			
 			return (new Particle(x, y, vx, vy, 0, 0));
-=======
+
 			var vx = baseVelocity + Math.random();
 			var vy = baseVelocity + Math.random();
 
 			return (new Particle(x, y, multx*vx, multy*vy, 0, 0));
->>>>>>> origin/master
+
 		}
 
 	// A generic field object with a position and a mass. Used to attract (or repell) particles
@@ -286,10 +291,8 @@ $(function() {
 
 	// Determines if two circles collide or not
 	function circleHitDetection(pointOne, pointTwo, radiusOne, radiusTwo){
-<<<<<<< HEAD
 		return ((pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x) + 
 			(pointOne.y - pointTwo.y) * (pointOne.y - pointTwo.y) <= (radiusOne + radiusTwo) * radiusOne + radiusTwo);
-=======
 		//pointOne=centre(pointOne.x,pointOne.y, radiusOne);
 		//pointTwo=centre(pointTwo.x,pointTwo.y, radiusTwo);
 		return (pointOne.x - pointTwo.x) * (pointOne.x - pointTwo.x) + (pointOne.y - pointTwo.y) * (pointOne.y - pointTwo.y) < (radiusOne + radiusTwo) * (radiusOne + radiusTwo);
@@ -316,7 +319,6 @@ $(function() {
                   }*/
 	function centre(x,y,radius){
 		return Vector(x-radius/2,y-radius/2);
->>>>>>> origin/master
 	}
 
 	// Loops the leap motion device
